@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RolModule } from './entities/rol/rol.module';
-import { UsuarioModule } from './entities/usuarios/usuario.module';
-import { CursoModule } from './entities/cursos/curso.module';
-import { NivelModule } from './entities/niveles/nivel.module';
-import { ProfesoresModule } from './entities/Profesores/profesores.module';
+import { RoleModule } from './entities/rol/role.module';
+import { UserModule } from './entities/usuarios/user.module';
+import { CourseModule } from './entities/cursos/ course.module';
+import { LevelModule } from './entities/niveles/ level.module';
+import { TeachersModule } from './entities/Profesores/teacher.module';
+import { SubjectModule } from './entities/materias/ subject.module';
 
 @Module({
   imports:[
@@ -18,11 +19,12 @@ import { ProfesoresModule } from './entities/Profesores/profesores.module';
       autoLoadEntities: true,
       synchronize: true, //Sólo usar en producción.
     }),
-    RolModule,
-    UsuarioModule,
-    CursoModule,
-    NivelModule,
-    ProfesoresModule
+    RoleModule,
+    UserModule,
+    CourseModule,
+    LevelModule,
+    TeachersModule,
+    SubjectModule
   ],
 })
 
