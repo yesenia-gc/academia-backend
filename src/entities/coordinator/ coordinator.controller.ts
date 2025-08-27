@@ -1,6 +1,7 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, ParseIntPipe } from '@nestjs/common';
 import { CoordinatorService } from './ coordinator.service';
 import { CreateCoordinatorDto } from './Create- coordinator.dto';
+import { UpdateCoordinatorDto } from './update- coordinator.dto';
 
 @Controller('coordinators')
 export class CoordinatorController {
@@ -31,5 +32,18 @@ export class CoordinatorController {
       message: error.message || defaultMessage,
       error: error.name || 'Error interno'
     };
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.coordinatorService.findOne(id);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() coordinator: UpdateCoordinatorDto,
+  ) {
+    return this.coordinatorService.update(id, coordinator);
   }
 }

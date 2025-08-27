@@ -1,36 +1,50 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
-import { NivelService } from './ subject.service';
-import { CreateNivelDto } from './create- subject.dto';
+import { Controller, Get, Post, Body, Param, Put, Delete, ParseIntPipe } from '@nestjs/common';
+import { SubjectService } from './ subject.service';
+import { CreateSubjectDto } from './create- subject.dto';
+import { UpdateSubjectDto } from './update- subject.dto';
 
-@Controller('niveles')
-export class NivelController {
-  constructor(private readonly nivelService: NivelService) {}
+@Controller('subjects')
+export class SubjectController {
+  constructor(private readonly subjectService: SubjectService) {}
 
   @Post('create')
-    async create(@Body() nivel: CreateNivelDto) {
-      try {
-        const newNivel = await this.nivelService.create(nivel);
-        return {
-          success: true,
-          message: 'Nivel creado exitosamente',
-          data: newNivel
-        }
-      } catch (error) {
-        return this.handleError(error, 'Error al crear nivel.')
-      }
-    }
-  
-    @Get('list')
-    findAll() {
-      return this.nivelService.findAll();
-    } 
-  
-    private handleError(error: any, defaultMessage: string) {
+  async create(@Body() subject: CreateSubjectDto) {
+    try {
+      const newSubject = await this.subjectService.create(subject)
       return {
-        success: false,
-        message: error.message || defaultMessage,
-        error: error.name || 'Error interno'
-      };
+        success: true,
+        message: 'Materia creada exitosamente',
+        data: newSubject
+      }
+    } catch (error) {
+      return this.handleError(error, 'Error al crear la materia.')
     }
+  }
+  
+  @Get('list')
+  findAll() {
+    return this.subjectService.findAll();
+  } 
+
+  private handleError(error: any, defaultMessage: string) {
+    return {
+      success: false,
+      message: error.message || defaultMessage,
+      error: error.name || 'Error interno'
+    };
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.subjectService.findOne(id);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() subject: UpdateSubjectDto,
+  ) {
+    return this.subjectService.update(id, subject);
+  }
   
 }

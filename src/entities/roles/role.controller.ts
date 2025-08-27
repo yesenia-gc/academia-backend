@@ -1,6 +1,7 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, ParseIntPipe, Put } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './create-role.dto';
+import { UpdateRoleDto } from './update-role.dto';
 
 @Controller('roles')
 export class RoleController {
@@ -31,5 +32,18 @@ export class RoleController {
       message: error.message || defaultMessage,
       error: error.name || 'Error interno'
     };
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.roleService.findOne(id);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() role: UpdateRoleDto,
+  ) {
+    return this.roleService.update(id, role);
   }
 }

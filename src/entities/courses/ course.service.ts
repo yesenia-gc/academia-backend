@@ -3,14 +3,11 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Course } from "./ course.entity";
 import { CreateCourseDto } from "./Create- course.dto";
-
-
+import { UpdateCourseDto } from "./update- course.dto";
 
 @Injectable()
-export class 
-CourseService {
-    constructor(
-    @InjectRepository(Course)
+export class CourseService {
+    constructor(@InjectRepository(Course)
     private courseRepository: Repository<Course>,
     ){}
 
@@ -36,6 +33,20 @@ CourseService {
     }
 
     findAll(): Promise<Course[]> {
-    return this.courseRepository.find();
-  }
+        return this.courseRepository.find();
+    }
+
+    async findOne(id: number): Promise<Course> {
+        const course = await this.courseRepository.findOneBy({ id });
+        if (!course) {
+            throw new ConflictException(`El curso con id ${id} no existe`);
+        }
+        return course;
+    }
+
+    async update(id: number, courseData: UpdateCourseDto): Promise<Course> {
+        const course = await this.findOne(id); // primero valida que exista
+        Object.assign(course, courseData);
+        return this.courseRepository.save(course); // devuelve el curso actualizado
+    } 
 }

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Level } from './ level.entity';
 import { CreateLevelDto} from './create- level.dto';
-
+import { UpdateLevelDto } from './update- level.dto';
 
 @Injectable()
 export class LevelService {
@@ -36,8 +36,21 @@ export class LevelService {
     }
   }
 
-
   findAll(): Promise<Level[]> {
     return this.levelRepository.find();
   }
+
+  async findOne(id: number): Promise<Level> {
+    const level = await this.levelRepository.findOneBy({ id });
+    if (!level) {
+        throw new ConflictException(`El nivel con id ${id} no existe`);
+    }
+    return level;
+    }
+
+    async update(id: number, levelData: UpdateLevelDto): Promise<Level> {
+    const level = await this.findOne(id); // primero valida que exista
+    Object.assign(level, levelData);
+    return this.levelRepository.save(level); // devuelve el nivel actualizado
+    } 
 }

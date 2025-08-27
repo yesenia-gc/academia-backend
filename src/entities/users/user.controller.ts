@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./create-user.dto";
 
@@ -31,5 +31,18 @@ export class UserController {
             message: error.message || defaultMessage,
             error: error.name || 'Error interno'
         }; 
+    }
+
+    @Get(':id')
+    async findOne(@Param('id', ParseIntPipe) id: number) {
+        return this.userService.findOne(id);
+    }
+
+    @Put(':id')
+    async update(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() user: CreateUserDto,
+    ) {
+        return this.userService.update(id, user);
     }
 }

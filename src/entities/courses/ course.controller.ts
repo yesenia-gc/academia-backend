@@ -1,6 +1,7 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, ParseIntPipe, Put } from '@nestjs/common';
 import { CourseService} from './ course.service';
 import { CreateCourseDto } from './Create- course.dto';
+import { UpdateCourseDto } from './update- course.dto';
 
 @Controller('courses')
 export class CourseController {
@@ -31,5 +32,18 @@ export class CourseController {
       message: error.message || defaultMessage,
       error: error.name || 'Error interno'
     };
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.courseService.findOne(id);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() course: UpdateCourseDto,
+  ) {
+    return this.courseService.update(id, course);
   }
 }

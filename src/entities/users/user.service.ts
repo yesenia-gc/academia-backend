@@ -32,4 +32,18 @@ export class UserService{
     async findAll(): Promise<User[]> {
         return this.userRepository.find();
     }
+
+    async findOne(id: number): Promise<User> {
+        const user = await this.userRepository.findOneBy({ id });
+        if (!user) {
+            throw new ConflictException(`El usuario con id ${id} no existe`);
+        }
+        return user;
+    }
+
+    async update(id: number, userData: CreateUserDto): Promise<User> {
+        const user = await this.findOne(id); // primero valida que exista
+        await this.userRepository.update(id, userData);
+        return this.findOne(id); // devuelve el usuario actualizado
+    }
 }

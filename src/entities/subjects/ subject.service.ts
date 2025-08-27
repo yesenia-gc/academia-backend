@@ -1,43 +1,54 @@
 import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Nivel } from './ subject.entity';
-import { CreateNivelDto } from './create- subject.dto';
-
+import { Subject } from './ subject.entity';
+import { CreateSubjectDto } from './create- subject.dto';
+import { UpdateSubjectDto } from './update- subject.dto';
 
 @Injectable()
-export class NivelService {
+export class SubjectService {
   constructor(
-    @InjectRepository(Nivel)
-    private nivelRepository: Repository<Nivel>,
+    @InjectRepository(Subject)
+    private subjectRepository: Repository<Subject>,
   ) {}
 
-  async create(nivel: CreateNivelDto): Promise<Nivel> {
+  async create(subject: CreateSubjectDto): Promise<Subject> {
     try {
-      const existingNivel = await this.nivelRepository.findOne({
-        where: { nombre: nivel.nombre },
+      const existingSubject = await this.subjectRepository.findOne({
+        where: { name: subject.name },
       });
-      
-      if (existingNivel) {
+
+      if (existingSubject) {
         throw new ConflictException(
-          `El nivel ${nivel.nombre} ya está en uso`,
+          `La materia ${subject.name} ya está en uso`,
         );
       }
 
-      const newNivel = this.nivelRepository.create(nivel);
-      return await this.nivelRepository.save(newNivel);
+      const newSubject = this.subjectRepository.create(subject);
+      return await this.subjectRepository.save(newSubject);
     } catch (error) {
-   /*    this.logger.error(Error `al crear el usuario: ${error.message}`); */
       if (error.code === 'ER_DUP_ENTRY') {
-        throw new ConflictException('El nivel ya está registrado');
+        throw new ConflictException('La materia ya está registrada');
       }
-
-      throw new InternalServerErrorException('Error al crear el nivel');
+      throw new InternalServerErrorException('Error al crear la materia');
     }
   }
 
+  findAll(): Promise<Subject[]> {
+    return this.subjectRepository.find();
+  }
 
-  findAll(): Promise<Nivel[]> {
-    return this.nivelRepository.find();
+  async findOne(id: number): Promise<Subject> {
+    const subject = await this.subjectRepository.findOneBy({ id });
+    if (!subject) {
+      throw new ConflictException(`La materia con id ${id} no existe`);
+    }
+    return subject;
+  }
+
+  async update(id: number, subjectData: UpdateSubjectDto): Promise<Subject> {
+    const subject = await this.findOne(id); // valida que exista
+    Object.assign(subject, subjectData);
+    return this.subjectRepository.save(subject); // devuelve la materia actualizada
   }
 }

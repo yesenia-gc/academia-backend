@@ -1,3 +1,3 @@
-export class CreateNivelDto {
-  nombre: string;
+export class CreateSubjectDto {
+  name: string;
 }

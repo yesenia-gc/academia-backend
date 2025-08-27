@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Nivel } from './ subject.entity';
-import { NivelService } from './ subject.service';
-import { NivelController } from './ subject.controller';
+import { Subject } from './ subject.entity';
+import { SubjectService } from './ subject.service';
+import { SubjectController } from './ subject.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Nivel])],
-  controllers: [NivelController],
-  providers: [NivelService],
+  imports: [TypeOrmModule.forFeature([Subject])],
+  controllers: [SubjectController],
+  providers: [SubjectService],
 })
 export class SubjectModule {}

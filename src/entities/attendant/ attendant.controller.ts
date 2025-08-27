@@ -1,6 +1,7 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, ParseIntPipe, Put } from '@nestjs/common';
 import { AttendantService } from './ attendant.service';
 import { CreateAttendantDto } from './Create- attendant.dto';
+import { UpdateAttendantDto } from './update- attendant.dto';
 
 @Controller('Attendants')
 export class AttendantController {
@@ -23,13 +24,24 @@ export class AttendantController {
   @Get('list')
   findAll() {
     return this.attendantService.findAll();
-  } 
+  } private handleError(error: any, defaultMessage: string) {
+      return {
+        success: false,
+        message: error.message || defaultMessage,
+        error: error.name || 'Error interno'
+      };
+    }
 
-  private handleError(error: any, defaultMessage: string) {
-    return {
-      success: false,
-      message: error.message || defaultMessage,
-      error: error.name || 'Error interno'
-    };
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.attendantService.findOne(id);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() attendant: UpdateAttendantDto,
+  ) {
+    return this.attendantService.update(id, attendant);
   }
 }

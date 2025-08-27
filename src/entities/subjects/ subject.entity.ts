@@ -1,12 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
-export class Nivel{
+export class Subject{
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  nombre: string;
+  name: string;
 
   @Column({ type: 'boolean', default: true })
   isActive: boolean;

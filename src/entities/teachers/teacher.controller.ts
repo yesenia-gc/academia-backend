@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ParseIntPipe, Put } from '@nestjs/common';
 import { TeachersService } from './teacher.service';
 import { CreateTeacherDto } from './create-teacher.dto';
 
@@ -7,6 +7,7 @@ export class TeachersController {
   constructor(private readonly teacherService: TeachersService) {}
 
   @Post('create')
+  
   async create(@Body() teacher: CreateTeacherDto) {
     try {
       const newTeacher = await this.teacherService.create(teacher);
@@ -31,5 +32,18 @@ export class TeachersController {
       message: error.message || defaultMessage,
       error: error.name || 'Error interno'
     };
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.teacherService.findOne(id);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() teacher: CreateTeacherDto,
+  ) {
+    return this.teacherService.update(id, teacher);
   }
 }

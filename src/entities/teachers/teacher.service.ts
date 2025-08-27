@@ -37,4 +37,18 @@ export class TeachersService {
   findAll(): Promise<Teacher[]> {
     return this.teacherRepository.find();
   }
+
+  async findOne(id: number): Promise<Teacher> {
+    const teacher = await this.teacherRepository.findOneBy({ id });
+    if (!teacher) {
+        throw new ConflictException(`El profesor con id ${id} no existe`);
+    }
+    return teacher;
+    }
+
+    async update(id: number, teacherData: CreateTeacherDto): Promise<Teacher> {
+    const teacher = await this.findOne(id); // primero valida que exista
+    await this.teacherRepository.update(id, teacherData);
+    return this.findOne(id); // devuelve el profesor actualizado
+    } 
 }

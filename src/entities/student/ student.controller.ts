@@ -1,6 +1,7 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, ParseIntPipe, Put } from '@nestjs/common';
 import { StudentService } from './ student.service';
 import { CreateStudentDto } from './Create- student.dto';
+import { UpdateStudentDto } from './update- student.dto';
 
 @Controller('students')
 export class StudentController {
@@ -16,6 +17,7 @@ export class StudentController {
         data: newStudent
       }
     } catch (error) {
+      console.log(error)
       return this.handleError(error, 'Error al crear estudiante.')
     }
   }
@@ -31,5 +33,17 @@ export class StudentController {
       message: error.message || defaultMessage,
       error: error.name || 'Error interno'
     };
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.studentService.findOne(id);
+  }
+
+  @Put(':id')
+  async update(@Param('id', ParseIntPipe) id: number,
+    @Body() student: UpdateStudentDto,
+  ) {
+    return this.studentService.update(id, student);
   }
 }
